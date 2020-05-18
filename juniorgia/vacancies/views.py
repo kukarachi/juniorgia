@@ -1,22 +1,25 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 
-from juniorgia.settings import SITE_NAME
-
-from .models import Company, Specialty, Vacancy
-from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView
+
+from django.contrib.auth.forms import UserCreationForm
+from .models import Company, Specialty, Vacancy
+
 
 
 class MySignupView(CreateView):
     form_class = UserCreationForm
-    success_url = '/'
-    template_name = 'vacancies/register_test.html'
+    success_url = '/login'
+    template_name = 'vacancies/signup.html'
 
 
-def my_render(request, html, data):
-    data['SITE_NAME'] = SITE_NAME
-    return render(request, html, data)
+class MyLoginView(LoginView):
+    redirect_authenticated_user = True
+    redirect_field_name = '/'
+    template_name = 'vacancies/login.html'
+
 
 
 class MainView(View):
@@ -32,7 +35,7 @@ class MainView(View):
         for c in categories:
             vacancy_count_for_category.append((c, Vacancy.objects.filter(specialty=c).count()))
 
-        return my_render(request, 'vacancies/index.html', {'companies': vacancy_count_for_company,
+        return render(request, 'vacancies/index.html', {'companies': vacancy_count_for_company,
                                                            'categories': vacancy_count_for_category
                                                            })
 
@@ -55,7 +58,7 @@ class VacancyView(View):
             path_to_file = 'vacancies/vacancy.html'
             context = {'vacancy': vacancy}
 
-        return my_render(request, path_to_file, context)
+        return render(request, path_to_file, context)
 
 
 class CompanyView(View):
@@ -63,4 +66,4 @@ class CompanyView(View):
         company = get_object_or_404(Company, id=id)
         vacancies = Vacancy.objects.filter(company=company)
 
-        return my_render(request, 'vacancies/company.html', {'company': company, 'vacancies': vacancies})
+        return render(request, 'vacancies/company.html', {'company': company, 'vacancies': vacancies})

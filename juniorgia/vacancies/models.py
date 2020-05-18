@@ -9,6 +9,7 @@ class Company(models.Model):
     logo = models.CharField(max_length=128, default="https://place-hold.it/100x60")  # "https://place-hold.it/100x60"
     description = models.CharField(max_length=128, null=True)
     employee_count = models.IntegerField(null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 
 class Specialty(models.Model):

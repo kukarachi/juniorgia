@@ -1,4 +1,5 @@
 from .models import Company, Specialty, Vacancy
+from django.contrib.auth.models import User
 
 jobs = [
 
@@ -45,11 +46,24 @@ specialties = [
 
 ]
 
+#################### make db empty ##################
+Specialty.objects.filter().delete()
+Company.objects.filter().delete()
+Vacancy.objects.filter().delete()
+#####################################################
+print('erased everything')
+
+
+User.objects.create_superuser(username='super_ragim', password='Qwertygang2002')
+User.objects.create_user(username='ragim', password='Qwertygang2002')
+
+owner = User.objects.get_by_natural_key(username='ragim')
+
 for spec in specialties:
     Specialty.objects.create(code=spec['code'], title=spec['title'], picture="https://place-hold.it/100x60")
 
 for c in companies:
-    Company.objects.create(name=c['title'], logo="https://place-hold.it/100x60")
+    Company.objects.create(name=c['title'], logo="https://place-hold.it/100x60", owner=owner)
 
 for job in jobs:
     company = Company.objects.get(name=job['company'])
@@ -57,4 +71,4 @@ for job in jobs:
     Vacancy.objects.create(title=job['title'], specialty=spec, company=company, description=job['desc'],
                            salary_min=job['salary_from'], salary_max=job['salary_to'], published_at=job['posted'])
 
-print('done')
+print('loaded new data')
