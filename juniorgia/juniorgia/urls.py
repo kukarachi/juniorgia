@@ -18,7 +18,6 @@ from django.contrib.auth.views import LogoutView
 from vacancies.views import CompanyView, MainView, MyLoginView, MySignupView, VacancyView
 
 
-
 urlpatterns = [
     path('', MainView.as_view()),
     path('companies/<int:id>/', CompanyView.as_view(), name='companies'),

@@ -30,7 +30,8 @@
               <p class="alert alert-info" role="alert">
                 Информация о компании обновлена
               </p>
-              <form action="/echo">
+              <form action="" method="POST">
+                {% csrf_token %}
                 <div class="row">
                   <div class="col-12 col-md-6">
                     <div class="form-group pb-2">
@@ -38,7 +39,7 @@
                       {{ form.name }}
                     </div>
                   </div>
-                  <div class="col-12 col-md-6">
+                  <!-- <div class="col-12 col-md-6">
                     <div class="form-group">
                       <label class="mb-2 text-dark" for="companyLogo">Логотип</label>
                       <div class="row align-items-center">
@@ -55,7 +56,7 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="row">
                   <div class="col-12 col-md-6">
