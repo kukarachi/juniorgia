@@ -1,16 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 
 from account.forms import CompanyForm, VacancyForm
 from vacancies.models import Company, Specialty, Vacancy
 from django.views.generic import CreateView
+from django.contrib import messages
 
 
 class CompanyCreate(CreateView):
     form_class = CompanyForm
-    success_url = '/'
     template_name = 'account/company-edit.html'
+
+    def get(self, request):
+        if Company.objects.filter(owner=request.user).first():
+            return redirect('/account/mycompany')
+
+        return render(request, self.template_name, {'form': self.form_class})
 
     def post(self, request):
         data = request.POST.dict()
@@ -21,14 +27,21 @@ class CompanyCreate(CreateView):
         print('Errors:', form.errors)
 
         if form.is_valid():
-            print('VALID')
             form.save()
+            return redirect('/account/mycompany')
 
         return render(request, self.template_name, {'form': form})
 
 
-class MyVacancies(View):
+class MyVacanciesView(View):
     def get(self, request, id):
+        pass
+
+
+class VacancyCreate(CreateView):
+
+
+    def post(self):
         pass
 
 
@@ -42,20 +55,18 @@ class MyCompanyView(View):
             path_to_file = 'account/company-edit.html'
         else:
             path_to_file = 'account/company-create.html'
-
         context = {'company': my_company, 'form': form}
         return render(request, path_to_file, context)
 
-
     def post(self, request):
-        print(Company.objects.get(owner=request.user).employee_count)
         my_company = Company.objects.filter(owner=request.user).first()
 
         data = request.POST.dict()
         data['owner'] = request.user
+        message = None
         form = CompanyForm(data, instance=my_company)
-
         if form.is_valid():
             form.save()
+            message = 'Информация была обновлена'
 
-        return render(request, 'account/company-edit.html', {'form': form})
+        return render(request, 'account/company-edit.html', {'form': form, 'message': message})

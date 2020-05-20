@@ -27,9 +27,11 @@
             <!-- Tab -->
             <section class="tab-pane fade show active">
               <h2 class="h4 pt-2 pb-3">Информация о&nbsp;компании</h2>
+              {% if message %}
               <p class="alert alert-info" role="alert">
-                Информация о компании обновлена
+                {{ message }}
               </p>
+              {% endif %}
               <form action="" method="POST">
                 {% csrf_token %}
                 <div class="row">
@@ -78,6 +80,7 @@
                 </div>
                 <div class="form-group">
                   <input type="submit" class="btn btn-info" value="Сохранить">
+                  {{ form.errors }}
                 </div>
               </form>
             </section>
