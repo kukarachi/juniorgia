@@ -1,30 +1,30 @@
 from django.shortcuts import render
 from django.views import View
-from django.views.generic.edit import FormView
-from django.http import HttpResponse
 
 
-from account.forms import CreateCompanyForm, CreateVacancyForm
+from account.forms import CompanyForm, VacancyForm
 from vacancies.models import Company, Specialty, Vacancy
 from django.views.generic import CreateView
 
-from django.contrib.auth.forms import UserCreationForm
-
 
 class CompanyCreate(CreateView):
-    form_class = CreateCompanyForm
+    form_class = CompanyForm
     success_url = '/'
     template_name = 'account/company-edit.html'
 
     def post(self, request):
-        print(request.POST)
-        f = self.form_class(request.POST)
+        data = request.POST.dict()
+        data['owner'] = request.user
+        form = self.form_class(data)
 
-        if f.is_valid():
+        print('User:', request.user)
+        print('Errors:', form.errors)
+
+        if form.is_valid():
             print('VALID')
-            f.save()
+            form.save()
 
-        return HttpResponse('OK')
+        return render(request, self.template_name, {'form': form})
 
 
 class MyVacancies(View):
@@ -35,12 +35,27 @@ class MyVacancies(View):
 class MyCompanyView(View):
     def get(self, request):
         my_company = Company.objects.filter(owner=request.user).first()
-        print(my_company)
+        form = CompanyForm()
 
         if my_company:
+            form = CompanyForm(instance=my_company)
             path_to_file = 'account/company-edit.html'
         else:
             path_to_file = 'account/company-create.html'
 
-        context = {'company': my_company, 'form': CreateCompanyForm}
+        context = {'company': my_company, 'form': form}
         return render(request, path_to_file, context)
+
+
+    def post(self, request):
+        print(Company.objects.get(owner=request.user).employee_count)
+        my_company = Company.objects.filter(owner=request.user).first()
+
+        data = request.POST.dict()
+        data['owner'] = request.user
+        form = CompanyForm(data, instance=my_company)
+
+        if form.is_valid():
+            form.save()
+
+        return render(request, 'account/company-edit.html', {'form': form})
