@@ -6,16 +6,26 @@ from django.db import models
 class Company(models.Model):
     name = models.CharField(max_length=64, null=True)
     location = models.CharField(max_length=64, null=True)
-    logo = models.CharField(max_length=128, default="https://place-hold.it/100x60")  # "https://place-hold.it/100x60"
     description = models.CharField(max_length=128, null=True)
     employee_count = models.IntegerField(null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    logo = models.ImageField(upload_to='logos', height_field='height_field', width_field='width_field', null=True)
+    height_field = models.PositiveIntegerField(default=0)
+    width_field = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.name
 
 
 class Specialty(models.Model):
     code = models.CharField(max_length=32)
     title = models.CharField(max_length=64)
-    picture = models.CharField(max_length=128, default="https://place-hold.it/100x60")  # "https://place-hold.it/100x60"
+    picture = models.ImageField(upload_to='pics', height_field='height_field', width_field='width_field', null=True)
+    height_field = models.PositiveIntegerField(default=0)
+    width_field = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+            return self.title
 
 
 class Vacancy(models.Model):
@@ -27,3 +37,6 @@ class Vacancy(models.Model):
     salary_min = models.IntegerField()
     salary_max = models.IntegerField()
     published_at = models.DateField()
+
+    def __str__(self):
+        return self.title

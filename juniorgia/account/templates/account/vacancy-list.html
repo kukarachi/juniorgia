@@ -1,10 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'vacancies/base.html' %}
 
 {% block header %}
 <style>
     body {
       background-color: #F6F2E6;
     }
+
 
 </style>
 {% endblock %}
@@ -18,8 +19,8 @@
             <aside class="pt-3 pb-4 px-4 mb-5 card">
                 <h1 class="h4 pt-2 pb-2">Моя компания</h1>
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link" href="#">1. Информация о&nbsp;компании</a>
-                    <a class="nav-link active" href="#">2. Вакансии</a>
+                    <a class="nav-link" href="/account/mycompany/">1. Информация о&nbsp;компании</a>
+                    <a class="nav-link active" href="/account/mycompany/vacancies">2. Вакансии</a>
                 </div>
             </aside>
         </div>
@@ -33,37 +34,20 @@
                             <div class="card-body px-4">
                                 <div class="row align-items-center">
                                     <div class="col-6 col-lg-8">
-                                        <a href="#vacancies/id" class="mb-1">{{ vacancy.title }}</a>
+                                        <a href="{% url 'vacancies/id' id=vacancy.id %}" class="mb-1">{{ vacancy.title }}</a>
                                         <p class="mb-1">
-                                            <span class="mr-4">120  000</span><a href="#" class="text-info">3
-                                            отклика</a>
+                                            <span class="mr-4">{{ vacancy.salary_min }}</span><a href="#" class="text-info">
+                                            {{ applications|length}} отклика</a>
                                         </p>
                                     </div>
                                     <div class="col-6 col-lg-4 text-right">
-                                        <a href="#" class="btn btn-outline-info">Изменить</a>
+                                        <a href="{% url 'my_vacancy' id=vacancy.id %}" class="btn btn-outline-info">Изменить</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
-                        <!-- vacancy state 2 -->
-                        <div class="card mt-3">
-                            <div class="card-body px-4">
-                                <div class="row align-items-center">
-                                    <div class="col-6 col-lg-8">
-                                        <a href="#" class="mb-1">Backend-разработчик</a>
-                                        <p class="mb-1">
-                                            <span class="mr-4">90  000</span><span
-                                                class="text-muted">Нет откликов</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-6 col-lg-4 text-right">
-                                        <a href="#" class="btn btn-outline-info">Изменить</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END vacancy state 2 -->
+                        <a href="create" class="btn btn-info mb-2">Добавить</a>
                     </section>
                 </div>
             </div>

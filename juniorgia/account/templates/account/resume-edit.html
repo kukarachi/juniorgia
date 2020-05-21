@@ -1,4 +1,4 @@
-{% extends 'block.html' %}
+{% extends 'vacancies/base.html' %}
 
 {% block header %}
 <title>Создать резюме | {{ SITE_NAME }}</title>
@@ -16,19 +16,22 @@
     <section class="col-12 col-lg-6 offset-lg-3 mt-5 card">
         <div class="card-body px-3 pb-4">
             <h1 class="h4 pt-2 pb-3">Мое резюме</h1>
-            <p class="alert alert-info" role="alert">Ваше резюме обновлено!</p>
-            <form action="/echo" class="">
+            {% if message %}
+            <p class="alert alert-info" role="alert"> {{ message }} </p>
+            {% endif %}
+            <form action="" class="" method="POST">
+                {% csrf_token %}
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group pb-2">
                             <label class="mb-2 text-dark" for="userName">Имя</label>
-                            <input class="form-control" type="text" value="Иван" id="userName">
+                            {{ form.first_name }}
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group pb-2">
                             <label class="mb-2 text-dark" for="userSurname">Фамилия</label>
-                            <input class="form-control" type="text" value="Топорыжкин" id="userSurname">
+                            {{ form.last_name }}
                         </div>
                     </div>
                 </div>
@@ -36,17 +39,13 @@
                     <div class="col-12 col-md-6">
                         <div class="form-group pb-2">
                             <label class="mb-2 text-dark" for="userReady">Готовность к работе</label>
-                            <select class="custom-select mr-sm-2" id="userReady">
-                                <option selected>Ищу работу</option>
-                                <option value="1">Открыть к предложениям</option>
-                                <option value="2">Не ищу работу</option>
-                            </select>
+                            {{ form.status }}
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group pb-2">
                             <label class="mb-2 text-dark" for="userPortfolio">Ожидаемое вознаграждение</label>
-                            <input class="form-control" type="text" value="120 000" id="userPortfolio">
+                            {{ form.salary }}
                         </div>
                     </div>
                 </div>
@@ -54,36 +53,28 @@
                     <div class="col-12 col-md-6">
                         <div class="form-group pb-2">
                             <label class="mb-2 text-dark" for="userSpecialization">Специализация</label>
-                            <select class="custom-select mr-sm-2" id="userSpecialization">
-                                <option selected>Backend разработка</option>
-                                <option value="1">Frontend разработка</option>
-                                <option value="2">Project manager</option>
-                            </select>
+                            {{ form.specialty }}
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group pb-2">
                             <label class="mb-2 text-dark" for="userQualification">Квалификация</label>
-                            <select class="custom-select mr-sm-2" id="userQualification">
-                                <option selected>Средний (middle)</option>
-                                <option value="1">Младший (junior)</option>
-                                <option value="2">Старший (senior)</option>
-                            </select>
+                            {{ form.grade }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group pb-2">
                     <label class="mb-2 text-dark" for="userEducation">Образование</label>
-                    <textarea class="form-control text-uppercase" rows="4" id="userEducation" style="color:#000;">АСТРАХАНСКИЙ ГОСУДАРСТВЕННЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ ИНСТИТУТ РЫБНОГО ХОЗЯЙСТВА, БИОЛОГИИ И ПРИРОДОПОЛЬЗОВАНИЯ, БАКАЛАВР ГОЛОВАСТИКОВЕДЕНИЯ</textarea>
+                    {{ form.education }}
                 </div>
                 <div class="form-group pb-2">
                     <label class="mb-2 text-dark" for="userExperience">Опыт работы</label>
-                    <textarea class="form-control" rows="4" id="userExperience" style="color:#000;">Астраханская государственная библиотека – администратор базы данных, системный архитектор, 2018-2020
-Астра - инжиниинг, системный интегратор – младший разработчик 2016– 2018</textarea>
+                    {{ form.experience }}
+
                 </div>
                 <div class="form-group pb-3">
                     <label class="mb-2 text-dark" for="userPortfolio">Ссылка на портфолио</label>
-                    <input class="form-control" type="text" placeholder="http://anylink.github.io" id="userPortfolio">
+                    {{ form.portfolio }}
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-info" value="Сохранить">

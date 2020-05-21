@@ -1,0 +1,28 @@
+{% extends 'vacancies/base.html' %}
+
+{% block header %}
+<title>Создать карточку компании | Джуманджи</title>
+<style>
+    body {
+      background-color: #F6F2E6;
+    }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+<main class="container mt-3 pb-5">
+    <section class="col-12 col-lg-6 offset-lg-3 mt-5 card">
+        <div class="card-body px-3 pb-4">
+            <h1 class="h4 pt-2">Мои вакансии</h1>
+            <p class="mt-2">У вас пока нет вакансий, но вы можете создать первую!</p>
+            <a href="create" class="btn btn-info mb-2">Добавить вакансию</a>
+        </div>
+    </section>
+</main>
+
+
+
+{% endblock %}
