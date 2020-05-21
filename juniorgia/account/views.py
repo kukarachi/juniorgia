@@ -1,15 +1,12 @@
-from django.shortcuts import render, redirect
-from django.views import View
 from datetime import date
 
-
-from account.forms import CompanyForm, VacancyForm, ApplicationForm, ResumeForm
-from account.models import Application, Resume
-
-
-from vacancies.models import Company, Specialty, Vacancy
+from account.forms import CompanyForm, VacancyForm, ResumeForm
+from account.models import Resume
+from django.shortcuts import render, redirect
+from django.views import View
 from django.views.generic import CreateView
 from django.views.generic.edit import FormView
+from vacancies.models import Company, Vacancy
 
 
 class CompanyCreate(CreateView):
@@ -97,7 +94,7 @@ class MyVacancyView(View):
         if form.is_valid():
             form.save()
 
-        return render(request, self.template_name, {'message': 'Вакансия обновлена', 'form': form} )
+        return render(request, self.template_name, {'message': 'Вакансия обновлена', 'form': form})
 
 
 class VacancyCreate(FormView):
@@ -158,9 +155,3 @@ class MyResumeView(View):
             message = 'Резюме сохранено'
 
         return render(request, 'account/resume-edit.html', {'form': form, 'message': message})
-
-
-
-
-
-

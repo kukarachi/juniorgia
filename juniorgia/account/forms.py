@@ -1,8 +1,6 @@
-from django.forms import forms, ModelForm
-import vacancies.models as vacancies_models
 import account.models as account_models
-
-from django.contrib.auth.forms import UserCreationForm
+import vacancies.models as vacancies_models
+from django.forms import ModelForm
 
 
 class VacancyForm(ModelForm):
