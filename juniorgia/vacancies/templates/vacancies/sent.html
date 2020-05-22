@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'vacancies/base.html' %}
 
 {% block header %}
   <title>Отклик отправлен | Джуниорджия</title>
@@ -13,7 +13,7 @@
           <div class="card-body text-center pt-5">
             <img src="../static/check.png" width="65" alt="">
             <h2 class="h5 card-title mt-4 mb-2">Отклик отправлен</h2>
-            <p><a href="#">Вернуться к вакансии</a></p>
+            <p><a href={{ referrer }}>Вернуться к вакансии</a></p>
           </div>
         </div>
       </div>

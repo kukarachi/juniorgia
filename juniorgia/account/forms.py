@@ -25,4 +25,4 @@ class CompanyForm(ModelForm):
     class Meta:
         model = vacancies_models.Company
         # fields = '__all__'
-        exclude = ['logo']
+        exclude = ['height_field', 'width_field']

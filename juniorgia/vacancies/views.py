@@ -1,9 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.generic import CreateView
 
+import account.models as account_models
+from account.forms import ApplicationForm
 from .models import Company, Specialty, Vacancy
 
 
@@ -37,24 +39,53 @@ class MainView(View):
                                                         })
 
 
-class VacancyView(View):
-    def get(self, request, id=None, code=None):
-        # /vacancies
-        if not id and not code:
-            path_to_file = 'vacancies/vacancies.html'
-            context = {'vacancies': Vacancy.objects.filter(), 'specialty': 'Все вакансии'}
-        # /vacancies/cat/code
-        elif not id:
-            vacancies = Vacancy.objects.filter(specialty__code=code)
-            specialty = get_object_or_404(Specialty, code=code).title
-            path_to_file = 'vacancies/vacancies.html'
-            context = {'vacancies': vacancies, 'specialty': specialty}
-        # /vacancies/id
-        else:
-            vacancy = get_object_or_404(Vacancy, id=id)
-            path_to_file = 'vacancies/vacancy.html'
-            context = {'vacancy': vacancy}
+class CategoryVacanciesView(View):
+    def get(self, request, code):
+        vacancies = Vacancy.objects.filter(specialty__code=code)
+        specialty = get_object_or_404(Specialty, code=code).title
+        path_to_file = 'vacancies/vacancies.html'
+        context = {'vacancies': vacancies, 'specialty': specialty}
 
+        return render(request, path_to_file, context)
+
+
+class VacancyIdView(View):
+    path_to_file = 'vacancies/vacancy.html'
+
+    def get(self, request, id):
+        vacancy = get_object_or_404(Vacancy, id=id)
+        context = {'vacancy': vacancy, 'form': ApplicationForm}
+        return render(request, self.path_to_file, context)
+
+    def post(self, request, id):
+        print('IN POST')
+        instance = account_models.Application.objects.filter(vacancy__id=id, user=request.user).first()
+        print('1')
+        data = request.POST.dict()
+        data['user'] = request.user
+        data['vacancy'] = Vacancy.objects.get(id=id)
+
+        form = ApplicationForm(data, instance=instance)
+        print('2')
+        print(form.errors)
+        if form.is_valid():
+            form.save()
+            print('3')
+            return redirect('/sent')
+        print('4')
+        return render(request, self.path_to_file, {'form': form})
+
+
+class SentView(View):
+    def get(self, request):
+        referrer = request.META['HTTP_REFERER']
+        return render(request, 'vacancies/sent.html', {'referrer': referrer})
+
+
+class VacanciesView(View):
+    def get(self, request):
+        path_to_file = 'vacancies/vacancies.html'
+        context = {'vacancies': Vacancy.objects.filter(), 'specialty': 'Все вакансии'}
         return render(request, path_to_file, context)
 
 
@@ -62,5 +93,4 @@ class CompanyView(View):
     def get(self, request, id):
         company = get_object_or_404(Company, id=id)
         vacancies = Vacancy.objects.filter(company=company)
-
         return render(request, 'vacancies/company.html', {'company': company, 'vacancies': vacancies})

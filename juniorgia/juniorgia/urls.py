@@ -13,26 +13,25 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path, include
-from django.contrib.auth.views import LogoutView
-from vacancies.views import CompanyView, MainView, MyLoginView, MySignupView, VacancyView
-from django.contrib import admin
-
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib import admin
+from django.contrib.auth.views import LogoutView
+from django.urls import path, include
+from vacancies.views import CompanyView, MainView, MyLoginView, MySignupView, VacanciesView, CategoryVacanciesView, \
+    VacancyIdView, SentView
 
 urlpatterns = [
-
     path('admin/', admin.site.urls),
     path('', MainView.as_view()),
     path('companies/<int:id>/', CompanyView.as_view(), name='companies'),
-    path('vacancies/cat/<str:code>/', VacancyView.as_view(), name='vacancies/cat'),
-    path('vacancies/<int:id>/', VacancyView.as_view(), name='vacancies/id'),
-    path('vacancies/', VacancyView.as_view()),
+    path('vacancies/cat/<str:code>/', CategoryVacanciesView.as_view(), name='vacancies/cat'),
+    path('vacancies/<int:id>/', VacancyIdView.as_view(), name='vacancies/id'),
+    path('vacancies/', VacanciesView.as_view()),
     path('signup/', MySignupView.as_view()),
     path('login/', MyLoginView.as_view()),
     path('logout/', LogoutView.as_view()),
+    path('sent/', SentView.as_view()),
     path('account/', include('account.urls')),
 ]
 

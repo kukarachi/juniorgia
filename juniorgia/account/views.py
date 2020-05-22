@@ -2,11 +2,14 @@ from datetime import date
 
 from account.forms import CompanyForm, VacancyForm, ResumeForm
 from account.models import Resume
+from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView
 from django.views.generic.edit import FormView
 from vacancies.models import Company, Vacancy
+
+from .models import Application
 
 
 class CompanyCreate(CreateView):
@@ -22,7 +25,7 @@ class CompanyCreate(CreateView):
     def post(self, request):
         data = request.POST.dict()
         data['owner'] = request.user
-        form = self.form_class(data)
+        form = self.form_class(data, request.FILES)
 
         print('User:', request.user)
         print('Errors:', form.errors)
@@ -67,13 +70,18 @@ class MyVacanciesView(View):
         if not my_company:
             return redirect('/account/mycompany')
 
-        vacancies = Vacancy.objects.filter(company=my_company)
-        if len(vacancies) > 0:
+        my_vacancies_list = Vacancy.objects.filter(company=my_company).values().annotate(
+            applications_count=Count('application_vacancy'))
+
+        print(my_vacancies_list)
+
+        if len(my_vacancies_list) > 0:
             path_to_file = 'account/vacancy-list.html'
+
         else:
             path_to_file = 'account/vacancy-create.html'
 
-        return render(request, path_to_file, {'vacancies': vacancies})
+        return render(request, path_to_file, {'vacancies': my_vacancies_list})
 
 
 class MyVacancyView(View):
@@ -83,7 +91,9 @@ class MyVacancyView(View):
     def get(self, request, id):
         vacancy = Vacancy.objects.get(id=id)
         form = self.form_class(instance=vacancy)
-        return render(request, self.template_name, {'form': form})
+
+        applications = Application.objects.filter(vacancy__id=id)
+        return render(request, self.template_name, {'form': form, 'applications': applications})
 
     def post(self, request, id):
         instance = Vacancy.objects.get(id=id)
@@ -155,3 +165,8 @@ class MyResumeView(View):
             message = 'Резюме сохранено'
 
         return render(request, 'account/resume-edit.html', {'form': form, 'message': message})
+
+
+class ApplicationCreate(View):
+    def post(self, request):
+        pass

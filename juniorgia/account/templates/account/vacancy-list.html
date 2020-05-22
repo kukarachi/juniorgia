@@ -37,7 +37,7 @@
                                         <a href="{% url 'vacancies/id' id=vacancy.id %}" class="mb-1">{{ vacancy.title }}</a>
                                         <p class="mb-1">
                                             <span class="mr-4">{{ vacancy.salary_min }}</span><a href="#" class="text-info">
-                                            {{ applications|length}} отклика</a>
+                                            {{ vacancy.applications_count }} отклика</a>
                                         </p>
                                     </div>
                                     <div class="col-6 col-lg-4 text-right">
