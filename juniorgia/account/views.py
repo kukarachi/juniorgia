@@ -167,6 +167,3 @@ class MyResumeView(View):
         return render(request, 'account/resume-edit.html', {'form': form, 'message': message})
 
 
-class ApplicationCreate(View):
-    def post(self, request):
-        pass

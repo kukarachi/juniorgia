@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from vacancies.views import CompanyView, MainView, MyLoginView, MySignupView, VacanciesView, CategoryVacanciesView, \
-    VacancyIdView, SentView
+    VacancyIdView, SentView, SearchView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('login/', MyLoginView.as_view()),
     path('logout/', LogoutView.as_view()),
     path('sent/', SentView.as_view()),
+    path('search/', SearchView.as_view(), name='search'),
     path('account/', include('account.urls')),
 ]
 

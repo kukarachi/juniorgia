@@ -8,7 +8,7 @@ class Company(models.Model):
     location = models.CharField(max_length=64, null=True)
     description = models.TextField(max_length=256, null=True)
     employee_count = models.IntegerField(null=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='company_owner')
     logo = models.ImageField(upload_to=MEDIA_COMPANY_IMAGE_DIR, height_field='height_field', width_field='width_field',
                              null=True)
     height_field = models.PositiveIntegerField(default=0)
@@ -40,8 +40,8 @@ class Specialty(models.Model):
 
 class Vacancy(models.Model):
     title = models.CharField(max_length=64)
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name='vacancies')
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='vacancies')
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name='vacancy_specialty')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='vacancy_company')
     skills = models.TextField(max_length=256, default='Скоро обновим')
     description = models.TextField(max_length=1024, default='Добавим позже')
     salary_min = models.IntegerField()

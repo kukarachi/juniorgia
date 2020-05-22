@@ -1,16 +1,17 @@
-from django.contrib.auth.forms import UserCreationForm
+import account.models as account_models
+from account.forms import ApplicationForm
 from django.contrib.auth.views import LoginView
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.generic import CreateView
 
-import account.models as account_models
-from account.forms import ApplicationForm
+from .forms import SearchForm, CustomCreationForm
 from .models import Company, Specialty, Vacancy
 
 
 class MySignupView(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomCreationForm
     success_url = '/login'
     template_name = 'vacancies/signup.html'
 
@@ -23,19 +24,13 @@ class MyLoginView(LoginView):
 
 class MainView(View):
     def get(self, request):
-        companies = Company.objects.filter()
-        categories = Specialty.objects.filter()
-        vacancy_count_for_company = []
-        vacancy_count_for_category = []
+        # if '.values().' is added between all() and annotate, pictures aren't loaded on template. Interesting.
+        categories = Specialty.objects.all().annotate(count=Count('vacancy_specialty'))
+        companies = Company.objects.all().annotate(count=Count('vacancy_company'))
 
-        for c in companies:
-            vacancy_count_for_company.append((c, Vacancy.objects.filter(company=c).count()))
-
-        for c in categories:
-            vacancy_count_for_category.append((c, Vacancy.objects.filter(specialty=c).count()))
-
-        return render(request, 'vacancies/index.html', {'companies': vacancy_count_for_company,
-                                                        'categories': vacancy_count_for_category
+        return render(request, 'vacancies/index.html', {'companies': companies,
+                                                        'categories': categories,
+                                                        'form': SearchForm,
                                                         })
 
 
@@ -58,21 +53,20 @@ class VacancyIdView(View):
         return render(request, self.path_to_file, context)
 
     def post(self, request, id):
-        print('IN POST')
+        if not request.user.is_authenticated():
+            return redirect('/login')
+
         instance = account_models.Application.objects.filter(vacancy__id=id, user=request.user).first()
-        print('1')
         data = request.POST.dict()
         data['user'] = request.user
         data['vacancy'] = Vacancy.objects.get(id=id)
 
         form = ApplicationForm(data, instance=instance)
-        print('2')
         print(form.errors)
         if form.is_valid():
             form.save()
-            print('3')
             return redirect('/sent')
-        print('4')
+
         return render(request, self.path_to_file, {'form': form})
 
 
@@ -94,3 +88,10 @@ class CompanyView(View):
         company = get_object_or_404(Company, id=id)
         vacancies = Vacancy.objects.filter(company=company)
         return render(request, 'vacancies/company.html', {'company': company, 'vacancies': vacancies})
+
+
+class SearchView(View):
+    def get(self, request):
+        key_words = request.GET['data']
+        vacancies = Vacancy.objects.filter(skills__contains=key_words)
+        return render(request, 'vacancies/search.html', {'form': SearchForm, 'vacancies': vacancies})
