@@ -1,14 +1,14 @@
 from datetime import date
 
-from account.forms import CompanyForm, VacancyForm, ResumeForm
-from account.models import Resume
 from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView
 from django.views.generic.edit import FormView
-from vacancies.models import Company, Vacancy
 
+from account.forms import CompanyForm, VacancyForm, ResumeForm
+from account.models import Resume
+from vacancies.models import Company, Vacancy
 from .models import Application
 
 
@@ -165,5 +165,3 @@ class MyResumeView(View):
             message = 'Резюме сохранено'
 
         return render(request, 'account/resume-edit.html', {'form': form, 'message': message})
-
-

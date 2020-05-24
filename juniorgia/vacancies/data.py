@@ -1,5 +1,4 @@
 from .models import Company, Specialty, Vacancy
-from django.contrib.auth.models import User
 
 jobs = [
 
@@ -46,11 +45,11 @@ specialties = [
 
 ]
 
-#################### make db empty ##################
+
 # Specialty.objects.filter().delete()
 # Company.objects.filter().delete()
 # Vacancy.objects.filter().delete()
-#####################################################
+
 print('erased everything')
 
 # User.objects.create_superuser(username='super_ragim', password='Qwertygang2002')

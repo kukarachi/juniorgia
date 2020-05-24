@@ -1,11 +1,11 @@
-import account.models as account_models
-from account.forms import ApplicationForm
 from django.contrib.auth.views import LoginView
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.generic import CreateView
 
+import account.models as account_models
+from account.forms import ApplicationForm
 from .forms import SearchForm, CustomCreationForm
 from .models import Company, Specialty, Vacancy
 
@@ -53,7 +53,7 @@ class VacancyIdView(View):
         return render(request, self.path_to_file, context)
 
     def post(self, request, id):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return redirect('/login')
 
         instance = account_models.Application.objects.filter(vacancy__id=id, user=request.user).first()
