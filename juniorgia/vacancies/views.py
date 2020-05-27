@@ -62,7 +62,6 @@ class VacancyIdView(View):
         data['vacancy'] = Vacancy.objects.get(id=id)
 
         form = ApplicationForm(data, instance=instance)
-        print(form.errors)
         if form.is_valid():
             form.save()
             return redirect('/sent')
@@ -72,8 +71,7 @@ class VacancyIdView(View):
 
 class SentView(View):
     def get(self, request):
-        referrer = request.META['HTTP_REFERER']
-        return render(request, 'vacancies/sent.html', {'referrer': referrer})
+        return render(request, 'vacancies/sent.html')
 
 
 class VacanciesView(View):
@@ -93,5 +91,6 @@ class CompanyView(View):
 class SearchView(View):
     def get(self, request):
         key_words = request.GET['data']
+        form = SearchForm({'data': key_words})
         vacancies = Vacancy.objects.filter(skills__contains=key_words)
-        return render(request, 'vacancies/search.html', {'form': SearchForm, 'vacancies': vacancies})
+        return render(request, 'vacancies/search.html', {'form': form, 'vacancies': vacancies})

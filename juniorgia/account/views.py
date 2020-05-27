@@ -1,13 +1,14 @@
 from datetime import date
 
 from django.db.models import Count
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import CreateView
 from django.views.generic.edit import FormView
 
-from account.forms import CompanyForm, VacancyForm, ResumeForm
+from account.forms import  ResumeForm
 from account.models import Resume
+from vacancies.forms import CompanyForm, VacancyForm
 from vacancies.models import Company, Vacancy
 from .models import Application
 
@@ -26,9 +27,6 @@ class CompanyCreate(CreateView):
         data = request.POST.dict()
         data['owner'] = request.user
         form = self.form_class(data, request.FILES)
-
-        print('User:', request.user)
-        print('Errors:', form.errors)
 
         if form.is_valid():
             form.save()
@@ -73,11 +71,8 @@ class MyVacanciesView(View):
         my_vacancies_list = Vacancy.objects.filter(company=my_company).values().annotate(
             applications_count=Count('application_vacancy'))
 
-        print(my_vacancies_list)
-
         if len(my_vacancies_list) > 0:
             path_to_file = 'account/vacancy-list.html'
-
         else:
             path_to_file = 'account/vacancy-create.html'
 
@@ -89,7 +84,7 @@ class MyVacancyView(View):
     template_name = 'account/vacancy-edit.html'
 
     def get(self, request, id):
-        vacancy = Vacancy.objects.get(id=id)
+        vacancy = get_object_or_404(Vacancy, company__owner=request.user, id=id)
         form = self.form_class(instance=vacancy)
 
         applications = Application.objects.filter(vacancy__id=id)

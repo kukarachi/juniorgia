@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from juniorgia.settings import MEDIA_COMPANY_IMAGE_DIR, MEDIA_SPECIALITY_IMAGE_DIR
 
 
 class Company(models.Model):
@@ -9,8 +9,8 @@ class Company(models.Model):
     description = models.TextField(max_length=256, null=True)
     employee_count = models.IntegerField(null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='company_owner')
-    logo = models.ImageField(upload_to=MEDIA_COMPANY_IMAGE_DIR, height_field='height_field', width_field='width_field',
-                             null=True)
+    logo = models.ImageField(upload_to=settings.MEDIA_COMPANY_IMAGE_DIR, height_field='height_field',
+                             width_field='width_field', null=True)
     height_field = models.PositiveIntegerField(default=0)
     width_field = models.PositiveIntegerField(default=0)
 
@@ -25,7 +25,7 @@ class Company(models.Model):
 class Specialty(models.Model):
     code = models.CharField(max_length=32)
     title = models.CharField(max_length=64)
-    picture = models.ImageField(upload_to=MEDIA_SPECIALITY_IMAGE_DIR, height_field='height_field',
+    picture = models.ImageField(upload_to=settings.MEDIA_SPECIALITY_IMAGE_DIR, height_field='height_field',
                                 width_field='width_field', null=True)
     height_field = models.PositiveIntegerField(default=0)
     width_field = models.PositiveIntegerField(default=0)
